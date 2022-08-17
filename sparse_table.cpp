@@ -6,12 +6,12 @@ class SparseTable {
 public:
 	vector<vector<int>> sparse;
 	SparseTable(vector<int> &a) {
-		int n = a.size();
+		int m = a.size();
 		sparse.push_back(a); 
 		int prev_j = 0; 
-		for (int d = 2; d <= n; d*=2) {
+		for (int d = 2; d <= m; d*=2) {
 			vector <int> tmp; 
-			for (int i = 0; i <= n-d; i++) {
+			for (int i = 0; i <= m-d; i++) {
 				tmp.push_back(max(sparse[prev_j][i], sparse[prev_j][i+d/2])); 
 			}
 			sparse.push_back(tmp);
@@ -19,8 +19,11 @@ public:
 		}
 	}
 	int get_range(int l, int r) {
-		double j = log2(r-l+1); 
-		if (abs(round(j) - j) < EPS) return sparse[(int)j][l];
-		return max(sparse[(int)j][l], sparse[(int)j][l+(int)pow(2,j)]);
+		int d = r-l+1; 
+		double x = log2(d);
+		if (abs(x - round(x)) < EPS) return sparse[(int)round(x)][l]; 
+		int j = (int)log2(d); 
+		int step = (int)pow(2,j); 
+		return max(sparse[j][l], sparse[j][r-step+1]);
 	}
 };
